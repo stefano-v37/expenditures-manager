@@ -1,2 +1,2 @@
 # expenditures-manager
-Expenditures manager to keep track of transfers
+Exercise to develop an expenditures manager to keep track of transfers.

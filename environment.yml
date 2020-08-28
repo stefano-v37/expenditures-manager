@@ -1,0 +1,10 @@
+name: expenditures-manager
+channels:
+- defaults
+dependencies:
+- python
+- matplotlib
+- notebook
+- numpy
+- pandas
+- setuptools
