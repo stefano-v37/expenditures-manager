@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from datetime import datetime as dt
 
 
 class Instance:
@@ -13,14 +14,20 @@ class Instance:
         self.new = not 'expenditures_list.csv' in os.listdir(self.path)
         self.link = self.path + '//' + 'expenditures_list.csv'
         if self.new:
-            self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Cost'])
+            self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Event', 'Cost'])
         else:
             self.data = pd.read_csv(self.link)
         self.data['Date'] = pd.to_datetime(self.data.Date)
 
-    def add_data(self, date, shop, description, cost, **kwargs):
+    def add_data(self,  **kwargs):
         success = False
-        new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Cost' : cost}
+        date = kwargs.get('date', dt.now())
+        shop = kwargs.get('shop', '')
+        description = kwargs.get('description', '')
+        event = kwargs.get('event', '')
+        cost = kwargs.get('cost', 0)
+        date, shop, description, cost,
+        new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : cost}
         check = self.check_duplicates(new_line)
         if check:
             if kwargs.pop('force_writing', False):
