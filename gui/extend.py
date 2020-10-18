@@ -1,11 +1,22 @@
+from ExpendituresManager.utilities import get_configuration
 from gui.model import Ui_MainWindow
 from PyQt5 import QtCore
 
 
 class ExtendedMainWindow(Ui_MainWindow):
-    def __init__(self, MainWindow):
+    def __init__(self, MainWindow, instance):
         self.setupUi(MainWindow)
         self.__extend__(MainWindow)
+
+        self.instance = instance
+        self.users = get_configuration()['output_path']
+
+        self.refreshUser()
+
+    def refreshUser(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.path.setText(_translate("MainWindow", self.instance.path))
+        self.userList.setCurrentIndex(list(self.users).index(self.instance.user))
 
     def __extend__(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

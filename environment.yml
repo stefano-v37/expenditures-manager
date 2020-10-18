@@ -7,4 +7,5 @@ dependencies:
 - notebook
 - numpy
 - pandas
+- pyyaml
 - setuptools

@@ -1,4 +1,6 @@
 output_path :
   default : 'expman'
+  Stefano : 'expmanStefano'
+columns : ['Date', 'Shop', 'Description', 'Cost', 'Event']
 name : 'expenditures-manager'
 backup_saves : 10

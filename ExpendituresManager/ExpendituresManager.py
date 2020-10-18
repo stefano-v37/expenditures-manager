@@ -2,17 +2,28 @@ import os
 import pandas as pd
 from datetime import datetime as dt
 
+from .utilities import get_configuration_entries, THIS_DIR
+
 
 class Instance:
-    def __init__(self, path=None):
+    def __init__(self, path=None, user='default'):
+        self.user = user
+        path_std, columns_std, name_std = get_configuration_entries(self.user)
         if path:
-            self.path = path
+            if path == 'this':
+                self.path = '\\'.join([str(x) for x in THIS_DIR.split('\\')][:-1]) + '\\output'
+            else:
+                self.path = path
         else:
-            this_dir = os.path.dirname(os.path.realpath(__file__))
-            self.path = '\\'.join([str(x) for x in this_dir.split('\\')][:-1]) + '\\output'
+            if path_std:
+                self.path = os.environ.get(path_std)
+            else:
+                self.path = '\\'.join([str(x) for x in THIS_DIR.split('\\')][:-1]) + '\\output'
 
-        self.new = not 'expenditures_list.csv' in os.listdir(self.path)
-        self.link = self.path + '//' + 'expenditures_list.csv'
+        self.new = not name_std in os.listdir(self.path)
+        print(self.path)
+        print(name_std)
+        self.link = self.path + '//' + name_std
         if self.new:
             self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Event', 'Cost'])
         else:
