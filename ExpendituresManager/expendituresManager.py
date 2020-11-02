@@ -35,7 +35,6 @@ class Instance:
         description = kwargs.get('description', '')
         event = kwargs.get('event', '')
         cost = kwargs.get('cost', 0)
-        # date, shop, description, cost,
         new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : cost}
         check = self.check_duplicates(new_line)
         if check:
