@@ -23,7 +23,7 @@ class Instance:
         self.new = not name_std in os.listdir(self.path)
         print(self.path)
         print(name_std)
-        self.link = self.path + '//' + name_std
+        self.link = self.path + '\\' + name_std
         if self.new:
             self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Event', 'Cost'])
         else:
@@ -69,5 +69,5 @@ class Instance:
             return False
 
 
-    def save_db(self):
+    def save_df(self):
         self.data.to_csv(self.link, index = False)
