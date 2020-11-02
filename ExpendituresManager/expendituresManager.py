@@ -21,8 +21,6 @@ class Instance:
                 self.path = '\\'.join([str(x) for x in THIS_DIR.split('\\')][:-1]) + '\\output'
 
         self.new = not name_std in os.listdir(self.path)
-        print(self.path)
-        print(name_std)
         self.link = self.path + '\\' + name_std
         if self.new:
             self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Event', 'Cost'])
@@ -37,7 +35,7 @@ class Instance:
         description = kwargs.get('description', '')
         event = kwargs.get('event', '')
         cost = kwargs.get('cost', 0)
-        date, shop, description, cost,
+        # date, shop, description, cost,
         new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : cost}
         check = self.check_duplicates(new_line)
         if check:

@@ -71,7 +71,7 @@ class Ui_MainWindow(object):
         self.labelEvent.setGeometry(QtCore.QRect(10, 230, 81, 20))
         self.labelEvent.setObjectName("labelEvent")
         self.labelStar1 = QtWidgets.QLabel(self.tab2)
-        self.labelStar1.setGeometry(QtCore.QRect(370, 70, 16, 16))
+        self.labelStar1.setGeometry(QtCore.QRect(370, 110, 16, 16))
         self.labelStar1.setObjectName("labelStar1")
         self.labelStar2 = QtWidgets.QLabel(self.tab2)
         self.labelStar2.setGeometry(QtCore.QRect(370, 190, 16, 16))
@@ -97,7 +97,7 @@ class Ui_MainWindow(object):
         self.path.setObjectName("path")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -116,6 +116,7 @@ class Ui_MainWindow(object):
         self.pushButtonSaveData.setText(_translate("MainWindow", "Save changes"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), _translate("MainWindow", "Tab 1"))
         self.insertDataButton.setText(_translate("MainWindow", "PushButton"))
+        self.inputDate.setText(_translate("MainWindow", "Today"))
         self.labelDate.setText(_translate("MainWindow", "Date:"))
         self.labelShop.setText(_translate("MainWindow", "Shop:"))
         self.labelDescriptio.setText(_translate("MainWindow", "Description:"))

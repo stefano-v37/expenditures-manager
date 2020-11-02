@@ -102,6 +102,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         # ! tab 1
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), _translate("MainWindow", "Data"))
         self.insertDataButton.setText(_translate("MainWindow", "Send"))
+        self.inputDate.setText(_translate("MainWindow", dt.today().date().__str__()))
 
         # !! tab 2
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), _translate("MainWindow", "Insert data"))
