@@ -8,7 +8,7 @@ from ExpendituresManager import Instance
 from ExpendituresManager.utilities import get_configuration
 from gui.matplotlibCanvas import MatplotlibCanvas
 from gui.model import Ui_MainWindow
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from datetime import datetime as dt
 
@@ -84,6 +84,7 @@ class ExtendedMainWindow(Ui_MainWindow):
             model = PandasModel(self.instance.data)
         self.tabWidget.setCurrentIndex(0)
         self.costView.setModel(model)
+        self.costView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
     def disconnectActions(self):
         self.userList.disconnect()
