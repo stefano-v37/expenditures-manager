@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from datetime import datetime as dt
+import numpy as np
 
 from .utilities import get_configuration_entries, THIS_DIR
 
@@ -23,10 +24,23 @@ class Instance:
         self.new = not name_std in os.listdir(self.path)
         self.link = self.path + '\\' + name_std
         if self.new:
-            self.data = pd.DataFrame(columns=['Date', 'Shop', 'Description', 'Event', 'Cost'])
+            self.data = pd.DataFrame(columns=columns_std)
         else:
-            self.data = pd.read_csv(self.link)
+            self.data = pd.read_csv(self.link)[columns_std]
         self.data['Date'] = pd.to_datetime(self.data.Date)
+        self.refresh()
+
+    def refresh(self):
+        self.data = self.data.sort_values(by="Date")
+
+    def get_cost(self, _type, cost):
+        mult = 0;
+        if _type == "Expense":
+            mult = -1;
+        elif _type == "Revenue":
+            mult = +1;
+        print(mult*np.float(cost))
+        return mult*np.float(cost)
 
     def add_data(self,  **kwargs):
         success = False
@@ -35,7 +49,9 @@ class Instance:
         description = kwargs.get('description', '')
         event = kwargs.get('event', '')
         cost = kwargs.get('cost', 0)
-        new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : cost}
+        _type = kwargs.get('type', 'Expense')
+        print(_type)
+        new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : self.get_cost(_type, cost), 'Type' : _type}
         check = self.check_duplicates(new_line)
         if check:
             if kwargs.pop('force_writing', False):
@@ -68,3 +84,10 @@ class Instance:
 
     def save_df(self):
         self.data.to_csv(self.link, index = False)
+
+    def delete_row(self, rows):
+        # TODO: at the moment this logic is not really meaningful but I guess I while put 'Date' column into index asap
+        if isinstance(rows, int):
+            rows = [rows]
+        self.data = self.data.iloc[[x for x in range(len(self.data)) if x not in rows]]
+        self.data = self.data.reset_index(drop=True)

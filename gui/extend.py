@@ -1,7 +1,12 @@
+from PyQt5.uic.properties import QtGui
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
 from pandas import DataFrame
 
 from ExpendituresManager import Instance
 from ExpendituresManager.utilities import get_configuration
+from gui.matplotlibCanvas import MatplotlibCanvas
 from gui.model import Ui_MainWindow
 from PyQt5 import QtCore
 
@@ -12,9 +17,11 @@ from gui.pandasModel import PandasModel
 
 class ExtendedMainWindow(Ui_MainWindow):
     def __init__(self, MainWindow, instance):
-        self.window = MainWindow;
+        self.window = MainWindow
         self.setupUi(MainWindow)
-        self.users = get_configuration()['output_path']
+        self.configuration = get_configuration()
+        self.users = self.configuration['output_path']
+        self.plots = self.configuration['plots']
         self.__extend__()
         self.setUser(instance)
 
@@ -32,17 +39,17 @@ class ExtendedMainWindow(Ui_MainWindow):
                                shop=self.inputShop.text(),
                                description=self.inputDescription.text(),
                                cost=self.inputCost.text(),
-                               event=self.inputEvent.text())
+                               event=self.inputEvent.text(),
+                               type="Expense")
         self.refresh()
 
     def deletedataclick(self):
+        separationChar = [',', ', ', '↔ ']
         input = self.deleteRowInput.text()
-        if ", " in input:
-            rows = input.split(", ")
-            rows = [int(x) for x in rows]
-        if "," in input:
-            rows = input.split(",")
-            rows = [int(x) for x in rows]
+        for sep in separationChar:
+            input = input.replace(sep, '↔')
+        if '↔' in input:
+            rows = [int(x) for x in input.split('↔')]
         else:
             rows = int(input)
         self.instance.delete_row(rows)
@@ -55,6 +62,7 @@ class ExtendedMainWindow(Ui_MainWindow):
     def refresh(self, data=None):
         self.setData(data)
         self.refreshUser()
+        # self.refreshPlot()
 
     def refreshUser(self):
         _translate = QtCore.QCoreApplication.translate
@@ -82,12 +90,23 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.pushButtonDeleteRow.disconnect()
         self.pushButtonSaveData.disconnect()
         self.insertDataButton.disconnect()
+        self.plotSelector.disconnect()
 
     def connectActions(self):
         self.userList.activated.connect(self.changeUser)
         self.pushButtonDeleteRow.clicked.connect(self.deletedataclick)
         self.pushButtonSaveData.clicked.connect(self.instance.save_df)
         self.insertDataButton.clicked.connect(self.insertdataclick)
+        self.plotSelector.activated.connect(self.refreshPlot)
+
+    def refreshPlot(self):
+        plotType = self.plotSelector.currentText()
+        self.plot(plotType)
+
+    def plot(self, plotType):
+        for i in reversed(range(self.dynamicPlot.layout().count())):
+            self.dynamicPlot.layout().itemAt(i).widget().setParent(None)
+        self.dynamicPlot.addWidget(MatplotlibCanvas(self.instance.data, plotType))
 
     def __extend__(self):
         _translate = QtCore.QCoreApplication.translate
@@ -109,3 +128,4 @@ class ExtendedMainWindow(Ui_MainWindow):
 
         # !!! tab 3
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab3), _translate("MainWindow", "Visualize"))
+        self.plotSelector.addItems(self.plots)
