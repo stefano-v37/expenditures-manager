@@ -1,1 +1,1 @@
-from .ExpendituresManager import *
+from .expendituresManager import *

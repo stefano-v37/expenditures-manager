@@ -1,10 +1,16 @@
-# custom
+#custom
 backup/*
 !backup/.gitkeep
 develop/*
 !develop/.gitkeep
 output/*
 !output/.gitkeep
+ExpendituresManager/configuration.yml
+.idea
+gui/model.ui
+
+# develop folder
+develop/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
