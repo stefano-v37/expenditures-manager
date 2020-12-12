@@ -64,6 +64,7 @@ class Instance:
             success = True
         if success:
             print(str(pd.DataFrame(self.data.iloc[-1])) + '\n' + 'has been written in the db, please save to store the data')
+            self.refresh()
 
     def check_duplicates(self, new_line):
         check = [y for _,y in new_line.items()]
