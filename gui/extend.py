@@ -1,7 +1,3 @@
-from PyQt5.uic.properties import QtGui
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 from pandas import DataFrame
 
 from ExpendituresManager import Instance
@@ -22,8 +18,11 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.configuration = get_configuration()
         self.users = self.configuration['output_path']
         self.plots = self.configuration['plots']
+        self.show_state = "Both"
         self.__extend__()
         self.setUser(instance)
+        self.typeSelectorData.valueChanged.connect(self.refresh)
+
 
     def setUser(self, init):
         if isinstance(init, Instance):
@@ -34,13 +33,20 @@ class ExtendedMainWindow(Ui_MainWindow):
             print("provide a proper initialization")
         self.refresh()
 
+    def get_type(self):
+        temp = self.typeInputSelector.value()
+        if temp == 0:
+            return "Expense"
+        elif temp == 1:
+            return "Revenue"
+
     def insertdataclick(self):
         self.instance.add_data(date=self.inputDate.text(),
                                shop=self.inputShop.text(),
                                description=self.inputDescription.text(),
                                cost=self.inputCost.text(),
                                event=self.inputEvent.text(),
-                               type="Expense")
+                               type=self.get_type())
         self.refresh()
 
     def deletedataclick(self):
@@ -60,6 +66,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.setUser(self.userList.currentText())
 
     def refresh(self, data=None):
+        self.set_state()
         self.setData(data)
         self.refreshUser()
         # self.refreshPlot()
@@ -77,11 +84,29 @@ class ExtendedMainWindow(Ui_MainWindow):
             print(te)
             self.connectActions()
 
+    def set_state(self):
+        temp = self.typeSelectorData.value()
+        if temp == 0:
+            self.show_state = "Expense"
+        elif temp == 1:
+            self.show_state =  "Both"
+        elif temp == 2:
+            self.show_state =  "Revenue"
+
+
+    def data_to_show(self):
+        if self.show_state == "Expense":
+            return self.instance.data.loc[self.instance.data.Type == "Expense"]
+        elif self.show_state == "Revenue":
+            return self.instance.data.loc[self.instance.data.Type == "Revenue"]
+        else:
+            return self.instance.data
+
     def setData(self, data=None):
         if type(data) == DataFrame:
             model = PandasModel(data)
         else:
-            model = PandasModel(self.instance.data)
+            model = PandasModel(self.data_to_show())
         self.tabWidget.setCurrentIndex(0)
         self.costView.setModel(model)
         self.costView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
@@ -107,7 +132,12 @@ class ExtendedMainWindow(Ui_MainWindow):
     def plot(self, plotType):
         for i in reversed(range(self.dynamicPlot.layout().count())):
             self.dynamicPlot.layout().itemAt(i).widget().setParent(None)
-        self.dynamicPlot.addWidget(MatplotlibCanvas(self.instance.data, plotType))
+        self.instance.plot(plotType=plotType)
+        self.instance._plot.generate(self.instance.data.copy())
+        tempfig = self.instance._plot.fig
+        tempax = self.instance._plot.ax
+        temp = MatplotlibCanvas(fig = tempfig, ax = tempax)
+        self.dynamicPlot.addWidget(temp)
 
     def __extend__(self):
         _translate = QtCore.QCoreApplication.translate
@@ -118,6 +148,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.labelUserSelected.setText(_translate("MainWindow", "User selected:"))
         self.labelPath.setText(_translate("MainWindow", "Path:"))
         self.path.setText(_translate("MainWindow", "path"))
+        self.typeSelectorData.setValue(1)
 
         # ! tab 1
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), _translate("MainWindow", "Data"))

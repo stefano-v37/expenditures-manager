@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime as dt
 import numpy as np
 
+from .plot import Plot
 from .utilities import get_configuration_entries, THIS_DIR
 
 
@@ -28,19 +29,21 @@ class Instance:
         else:
             self.data = pd.read_csv(self.link)[columns_std]
         self.data['Date'] = pd.to_datetime(self.data.Date)
+        self._plot = None
         self.refresh()
 
     def refresh(self):
         self.data = self.data.sort_values(by="Date")
 
     def get_cost(self, _type, cost):
-        mult = 0;
-        if _type == "Expense":
-            mult = -1;
-        elif _type == "Revenue":
-            mult = +1;
-        print(mult*np.float(cost))
-        return mult*np.float(cost)
+        return np.float(cost)
+    # # TODO: changed mode for a while
+    #     mult = 0;
+    #     if _type == "Expense":
+    #         mult = -1;
+    #     elif _type == "Revenue":
+    #         mult = +1;
+    #     return mult*np.float(cost)
 
     def add_data(self,  **kwargs):
         success = False
@@ -50,7 +53,6 @@ class Instance:
         event = kwargs.get('event', '')
         cost = kwargs.get('cost', 0)
         _type = kwargs.get('type', 'Expense')
-        print(_type)
         new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : self.get_cost(_type, cost), 'Type' : _type}
         check = self.check_duplicates(new_line)
         if check:
@@ -62,9 +64,10 @@ class Instance:
             success = True
         if success:
             print(str(pd.DataFrame(self.data.iloc[-1])) + '\n' + 'has been written in the db, please save to store the data')
+            self.refresh()
 
     def check_duplicates(self, new_line):
-        check = [y for _,y in new_line.items()]
+        check = [y for _, y in new_line.items()]
         line_counter = 0
         duplicates = []
         for x in self.data.values:
@@ -81,6 +84,8 @@ class Instance:
         else:
             return False
 
+    def plot(self, plotType = "", figsize = (16,9)):
+        self._plot = Plot(plotType = plotType, figsize = figsize)
 
     def save_df(self):
         self.data.to_csv(self.link, index = False)
