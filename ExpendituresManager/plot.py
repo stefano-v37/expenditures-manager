@@ -27,12 +27,10 @@ class Plot:
                                                        rule_expenditures.Date.dt.month]).sum()
 
         data_expenditures = data_expenditures.fillna(0)
-        print(data_expenditures.index)
 
         data_gains = rule_gains.groupby([rule_gains.Date.dt.year,
                                          rule_gains.Date.dt.month]).sum()
         data_gains = data_gains.fillna(0)
-        print(data_gains.index)
 
         xticklabels = range(len(data_expenditures.index))
         self.ax.bar(xticklabels,
