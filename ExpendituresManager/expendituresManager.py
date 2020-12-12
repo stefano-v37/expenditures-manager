@@ -36,7 +36,7 @@ class Instance:
         self.data = self.data.sort_values(by="Date")
 
     def get_cost(self, _type, cost):
-        return cost
+        return np.float(cost)
     # # TODO: changed mode for a while
     #     mult = 0;
     #     if _type == "Expense":
@@ -53,7 +53,6 @@ class Instance:
         event = kwargs.get('event', '')
         cost = kwargs.get('cost', 0)
         _type = kwargs.get('type', 'Expense')
-        print(_type)
         new_line = {'Date' : pd.to_datetime(date), 'Shop' : shop, 'Description' : description, 'Event' : event, 'Cost' : self.get_cost(_type, cost), 'Type' : _type}
         check = self.check_duplicates(new_line)
         if check:

@@ -27,6 +27,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.show_state = "Both"
         self.__extend__()
         self.setUser(instance)
+        self.typeSelectorData.valueChanged.connect(self.refresh)
 
 
     def setUser(self, init):
@@ -38,13 +39,20 @@ class ExtendedMainWindow(Ui_MainWindow):
             print("provide a proper initialization")
         self.refresh()
 
+    def get_type(self):
+        temp = self.typeInputSelector.value()
+        if temp == 0:
+            return "Expense"
+        elif temp == 1:
+            return "Revenue"
+
     def insertdataclick(self):
         self.instance.add_data(date=self.inputDate.text(),
                                shop=self.inputShop.text(),
                                description=self.inputDescription.text(),
                                cost=self.inputCost.text(),
                                event=self.inputEvent.text(),
-                               type="Expense")
+                               type=self.get_type())
         self.refresh()
 
     def deletedataclick(self):
@@ -64,6 +72,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.setUser(self.userList.currentText())
 
     def refresh(self, data=None):
+        self.set_state()
         self.setData(data)
         self.refreshUser()
         # self.refreshPlot()
@@ -80,6 +89,17 @@ class ExtendedMainWindow(Ui_MainWindow):
         except TypeError as te:
             print(te)
             self.connectActions()
+
+    def set_state(self):
+        temp = self.typeSelectorData.value()
+        print(temp)
+        if temp == 0:
+            self.show_state = "Expense"
+        elif temp == 1:
+            self.show_state =  "Both"
+        elif temp == 2:
+            self.show_state =  "Revenue"
+
 
     def data_to_show(self):
         if self.show_state == "Expense":
@@ -120,8 +140,6 @@ class ExtendedMainWindow(Ui_MainWindow):
     def plot(self, plotType):
         for i in reversed(range(self.dynamicPlot.layout().count())):
             self.dynamicPlot.layout().itemAt(i).widget().setParent(None)
-        # self.dynamicPlot.deleteLater()
-        print("plotType before:" + plotType)
         self.instance.plot(plotType=plotType)
         self.instance._plot.generate(self.instance.data.copy())
         tempfig = self.instance._plot.fig
@@ -138,6 +156,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.labelUserSelected.setText(_translate("MainWindow", "User selected:"))
         self.labelPath.setText(_translate("MainWindow", "Path:"))
         self.path.setText(_translate("MainWindow", "path"))
+        self.typeSelectorData.setValue(1)
 
         # ! tab 1
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), _translate("MainWindow", "Data"))
