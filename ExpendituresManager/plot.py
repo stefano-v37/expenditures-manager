@@ -25,11 +25,14 @@ class Plot:
 
         data_expenditures = - rule_expenditures.groupby([rule_expenditures.Date.dt.year,
                                                        rule_expenditures.Date.dt.month]).sum()
-        data_expenditures = data_expenditures.reindex(data_expenditures.index).fillna(0)
+
+        data_expenditures = data_expenditures.fillna(0)
+        print(data_expenditures.index)
 
         data_gains = rule_gains.groupby([rule_gains.Date.dt.year,
                                          rule_gains.Date.dt.month]).sum()
-        data_gains = data_gains.reindex(data_expenditures.index).fillna(0)
+        data_gains = data_gains.fillna(0)
+        print(data_gains.index)
 
         xticklabels = range(len(data_expenditures.index))
         self.ax.bar(xticklabels,
@@ -37,18 +40,22 @@ class Plot:
                     bottom=data_gains["Cost"],
                     width=0.25,
                     align='edge',
+                    label = "Expenditures",
                     color='red', alpha=0.46)
         self.ax.bar(xticklabels,
                     data_gains["Cost"],
                     width=-0.25,
                     align='edge',
+                    label="Revenues",
                     color='blue', alpha=0.46)
         self.ax.axhline(0,
                         color='black',
                         ls='dotted')
 
+        self.ax.legend(ncol=2, bbox_to_anchor=(0.5, 1),
+                  loc='lower center')
         self.ax.xaxis.set_major_locator(ticker.FixedLocator(xticklabels))
-        self.ax.set_xticklabels(set([str(year) + '-' + str(month) for year, month in data_expenditures.index]))
+        self.ax.set_xticklabels([str(year) + '-' + str(month) for year, month in data_expenditures.index])
 
         self.ax.set_ylim(min(data_expenditures.Cost+data_gains.Cost)*1.05, max(data_gains.Cost)*1.05)
 
