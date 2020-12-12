@@ -92,7 +92,6 @@ class ExtendedMainWindow(Ui_MainWindow):
 
     def set_state(self):
         temp = self.typeSelectorData.value()
-        print(temp)
         if temp == 0:
             self.show_state = "Expense"
         elif temp == 1:
@@ -134,7 +133,6 @@ class ExtendedMainWindow(Ui_MainWindow):
 
     def refreshPlot(self):
         plotType = self.plotSelector.currentText()
-        print("currentText:" + self.plotSelector.currentText())
         self.plot(plotType)
 
     def plot(self, plotType):
