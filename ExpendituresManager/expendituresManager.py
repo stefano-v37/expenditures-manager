@@ -67,7 +67,7 @@ class Instance:
             self.refresh()
 
     def check_duplicates(self, new_line):
-        check = [y for _,y in new_line.items()]
+        check = [y for _, y in new_line.items()]
         line_counter = 0
         duplicates = []
         for x in self.data.values:
@@ -84,8 +84,8 @@ class Instance:
         else:
             return False
 
-    def plot(self, data = "", plotType = "", figsize = (16,9)):
-        self._plot = Plot(plotType = plotType, figsize = (16,9))
+    def plot(self, plotType = "", figsize = (16,9)):
+        self._plot = Plot(plotType = plotType, figsize = figsize)
 
     def save_df(self):
         self.data.to_csv(self.link, index = False)

@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+from matplotlib import ticker
+from matplotlib.ticker import LinearLocator
+
 
 class Plot:
 
@@ -6,12 +9,15 @@ class Plot:
         self.plotType = plotType
         print("plotType:" + plotType)
         self.fig, self.ax = plt.subplots(figsize=figsize)
+        self.ax.set_ylabel("Euro\n(€)")
+        self.ax.grid(axis="y")
 
     def generate(self, data):
-        if self.plotType == "month plot":
-            self.generateMonthPlot(data)
-        elif self.plotType == "plot overtime":
-            self.generatePlotOvertime(data)
+        if len(data) > 0:
+            if self.plotType == "month plot":
+                self.generateMonthPlot(data)
+            elif self.plotType == "plot overtime":
+                self.generatePlotOvertime(data)
 
     def generateMonthPlot(self, data):
         rule_expenditures = data.loc[data.Type == "Expense"]
@@ -27,23 +33,24 @@ class Plot:
 
         xticklabels = range(len(data_expenditures.index))
         self.ax.bar(xticklabels,
-                    data_expenditures.Cost,
-                    bottom=data_gains.Cost,
+                    data_expenditures["Cost"],
+                    bottom=data_gains["Cost"],
                     width=0.25,
                     align='edge',
                     color='red', alpha=0.46)
         self.ax.bar(xticklabels,
-                    data_gains.Cost,
+                    data_gains["Cost"],
                     width=-0.25,
                     align='edge',
                     color='blue', alpha=0.46)
         self.ax.axhline(0,
                         color='black',
                         ls='dotted')
-        #
-        #
-        # self.ax.plot([0,1], [1,3])
-        self.ax.set_ylabel("Euro\n(€)")
+
+        self.ax.xaxis.set_major_locator(ticker.FixedLocator(xticklabels))
+        self.ax.set_xticklabels(set([str(year) + '-' + str(month) for year, month in data_expenditures.index]))
+
+        self.ax.set_ylim(min(data_expenditures.Cost+data_gains.Cost)*1.05, max(data_gains.Cost)*1.05)
 
     def generatePlotOvertime(self, data):
         data.loc[data.Type == "Expense", "Cost"] = - data.loc[data.Type == "Expense", "Cost"]
@@ -51,8 +58,10 @@ class Plot:
         dataOvertime = data.Cost.cumsum()
 
         self.ax.plot(dataOvertime)
-        self.ax.set_ylabel("Euros\n(€)")
         self.fig.autofmt_xdate()
+
+        xlocator = LinearLocator(10)
+        self.ax.xaxis.set_major_locator(xlocator)
 
     def show(self):
         plt.show()

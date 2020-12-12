@@ -1,9 +1,3 @@
-import time
-
-from PyQt5.uic.properties import QtGui
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 from pandas import DataFrame
 
 from ExpendituresManager import Instance
@@ -142,7 +136,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.instance._plot.generate(self.instance.data.copy())
         tempfig = self.instance._plot.fig
         tempax = self.instance._plot.ax
-        temp = MatplotlibCanvas(self.instance.data, plotType, fig = tempfig, ax = tempax)
+        temp = MatplotlibCanvas(fig = tempfig, ax = tempax)
         self.dynamicPlot.addWidget(temp)
 
     def __extend__(self):

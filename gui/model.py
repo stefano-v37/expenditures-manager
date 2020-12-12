@@ -372,6 +372,20 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.userList, self.tabWidget)
+        MainWindow.setTabOrder(self.tabWidget, self.costView)
+        MainWindow.setTabOrder(self.costView, self.typeSelectorData)
+        MainWindow.setTabOrder(self.typeSelectorData, self.deleteRowInput)
+        MainWindow.setTabOrder(self.deleteRowInput, self.pushButtonDeleteRow)
+        MainWindow.setTabOrder(self.pushButtonDeleteRow, self.pushButtonSaveData)
+        MainWindow.setTabOrder(self.pushButtonSaveData, self.inputDate)
+        MainWindow.setTabOrder(self.inputDate, self.inputShop)
+        MainWindow.setTabOrder(self.inputShop, self.inputDescription)
+        MainWindow.setTabOrder(self.inputDescription, self.inputCost)
+        MainWindow.setTabOrder(self.inputCost, self.typeInputSelector)
+        MainWindow.setTabOrder(self.typeInputSelector, self.inputEvent)
+        MainWindow.setTabOrder(self.inputEvent, self.insertDataButton)
+        MainWindow.setTabOrder(self.insertDataButton, self.plotSelector)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
