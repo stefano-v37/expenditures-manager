@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.uic.properties import QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -22,8 +24,10 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.configuration = get_configuration()
         self.users = self.configuration['output_path']
         self.plots = self.configuration['plots']
+        self.show_state = "Both"
         self.__extend__()
         self.setUser(instance)
+
 
     def setUser(self, init):
         if isinstance(init, Instance):
@@ -77,11 +81,19 @@ class ExtendedMainWindow(Ui_MainWindow):
             print(te)
             self.connectActions()
 
+    def data_to_show(self):
+        if self.show_state == "Expense":
+            return self.instance.data.loc[self.instance.data.Type == "Expense"]
+        elif self.show_state == "Revenue":
+            return self.instance.data.loc[self.instance.data.Type == "Revenue"]
+        else:
+            return self.instance.data
+
     def setData(self, data=None):
         if type(data) == DataFrame:
             model = PandasModel(data)
         else:
-            model = PandasModel(self.instance.data)
+            model = PandasModel(self.data_to_show())
         self.tabWidget.setCurrentIndex(0)
         self.costView.setModel(model)
         self.costView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
@@ -102,12 +114,20 @@ class ExtendedMainWindow(Ui_MainWindow):
 
     def refreshPlot(self):
         plotType = self.plotSelector.currentText()
+        print("currentText:" + self.plotSelector.currentText())
         self.plot(plotType)
 
     def plot(self, plotType):
         for i in reversed(range(self.dynamicPlot.layout().count())):
             self.dynamicPlot.layout().itemAt(i).widget().setParent(None)
-        self.dynamicPlot.addWidget(MatplotlibCanvas(self.instance.data, plotType))
+        # self.dynamicPlot.deleteLater()
+        print("plotType before:" + plotType)
+        self.instance.plot(plotType=plotType)
+        self.instance._plot.generate(self.instance.data.copy())
+        tempfig = self.instance._plot.fig
+        tempax = self.instance._plot.ax
+        temp = MatplotlibCanvas(self.instance.data, plotType, fig = tempfig, ax = tempax)
+        self.dynamicPlot.addWidget(temp)
 
     def __extend__(self):
         _translate = QtCore.QCoreApplication.translate

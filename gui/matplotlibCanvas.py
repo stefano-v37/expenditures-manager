@@ -12,17 +12,19 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
     def __init__(self, data, type, **kwargs):
         self.data = data
         self.dpi = kwargs.get("dpi", 120)
-        self.fig, self.ax = plt.subplots(dpi = self.dpi)
+        # self.fig, self.ax = plt.subplots(dpi = self.dpi)
+        self.fig = kwargs["fig"]
+        self.ax = kwargs["ax"]
         super(MatplotlibCanvas,self).__init__(self.fig)
-        if len(self.data) > 0:
-            self.plot(type)
-        self.fig.tight_layout()
+        # if len(self.data) > 0:
+        #     self.plot(type)
+        # self.fig.tight_layout()
 
-    def plot(self, type):
-        if type == "month plot":
-            self.plotMonthPlot()
-        elif type == "plot overtime":
-            self.overTimePlot()
+    # def plot(self, type):
+    #     if type == "month plot":
+    #         self.plotMonthPlot()
+    #     elif type == "plot overtime":
+    #         self.overTimePlot()
 
     def plotMonthPlot(self):
         rule_expenditures = self.data.loc[self.data.Type == "Expense"]
@@ -38,14 +40,14 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
 
         xticklabels = range(len(data_expenditures.index))
         self.ax.bar(xticklabels,
-               data_expenditures.Cost,
-                    width=0.5,
+                    - data_expenditures.Cost,
+                    bottom = data_gains.Cost,
+                    width=0.25,
                     align = 'edge',
                color='red', alpha=0.46)
         self.ax.bar(xticklabels,
-               data_expenditures.Cost,
-                    bottom=data_gains.Cost,
-                    width=-0.5,
+               data_gains.Cost,
+                    width=-0.25,
                     align='edge',
                color='blue', alpha=0.46)
         self.ax.axhline(0,
