@@ -62,7 +62,8 @@ class Plot:
         data = data.set_index("Date")
         dataOvertime = data.Cost.cumsum()
 
-        self.ax.plot(dataOvertime)
+        self.ax.step(dataOvertime.index,
+                     dataOvertime)
         self.fig.autofmt_xdate()
 
         xlocator = LinearLocator(10)
