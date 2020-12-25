@@ -19,6 +19,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.users = self.configuration['output_path']
         self.plots = self.configuration['plots']
         self.show_state = "Both"
+        self.show_plot = "month plot"
         self.__extend__()
         self.setUser(instance)
         self.typeSelectorData.valueChanged.connect(self.refresh)
@@ -69,7 +70,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.set_state()
         self.setData(data)
         self.refreshUser()
-        # self.refreshPlot()
+        self.refreshPlot()
 
     def refreshUser(self):
         _translate = QtCore.QCoreApplication.translate
@@ -126,8 +127,11 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.plotSelector.activated.connect(self.refreshPlot)
 
     def refreshPlot(self):
-        plotType = self.plotSelector.currentText()
-        self.plot(plotType)
+        self.show_plot = self.plotSelector.currentText()
+        self.drawPlot()
+
+    def drawPlot(self):
+        self.plot(self.show_plot)
 
     def plot(self, plotType):
         for i in reversed(range(self.dynamicPlot.layout().count())):
