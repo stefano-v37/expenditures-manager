@@ -90,9 +90,9 @@ class ExtendedMainWindow(Ui_MainWindow):
         if temp == 0:
             self.show_state = "Expense"
         elif temp == 1:
-            self.show_state =  "Both"
+            self.show_state = "Both"
         elif temp == 2:
-            self.show_state =  "Revenue"
+            self.show_state = "Revenue"
 
 
     def data_to_show(self):
