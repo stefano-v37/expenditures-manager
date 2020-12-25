@@ -9,6 +9,7 @@ class Plot:
         self.plotType = plotType
         print("plotType:" + plotType)
         self.fig, self.ax = plt.subplots(figsize=figsize)
+        self.fig.set_size_inches(figsize[0], figsize[1], forward=True)
         self.ax.set_ylabel("Euro\n(€)")
         self.ax.grid(axis="y")
 
