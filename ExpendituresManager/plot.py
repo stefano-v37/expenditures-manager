@@ -24,25 +24,28 @@ class Plot:
         rule_expenditures = data.loc[data.Type == "Expense"]
         rule_gains = data.loc[data.Type == "Revenue"]
 
-        data_expenditures = - rule_expenditures.groupby([rule_expenditures.Date.dt.year,
-                                                       rule_expenditures.Date.dt.month]).sum()
+        data_expenditures = (-1)*rule_expenditures.groupby([rule_expenditures.Date.dt.year,
+                                                         rule_expenditures.Date.dt.month]).sum()
 
         data_expenditures = data_expenditures.fillna(0)
 
         data_gains = rule_gains.groupby([rule_gains.Date.dt.year,
                                          rule_gains.Date.dt.month]).sum()
-        data_gains = data_gains.fillna(0)
 
-        xticklabels = range(len(data_expenditures.index))
+        data_for_plot = data_expenditures.join(data_gains, how="outer", rsuffix="_revenues",
+                                               lsuffix="_expenditures").fillna(0)
+
+        xticklabels = range(len(data_for_plot.index))
+
         self.ax.bar(xticklabels,
-                    data_expenditures["Cost"],
-                    bottom=data_gains["Cost"],
+                    data_for_plot["Cost_expenditures"],
+                    bottom=data_for_plot["Cost_revenues"],
                     width=0.25,
                     align='edge',
-                    label = "Expenditures",
+                    label="Expenditures",
                     color='red', alpha=0.46)
         self.ax.bar(xticklabels,
-                    data_gains["Cost"],
+                    data_for_plot["Cost_revenues"],
                     width=-0.25,
                     align='edge',
                     label="Revenues",
@@ -52,11 +55,13 @@ class Plot:
                         ls='dotted')
 
         self.ax.legend(ncol=2, bbox_to_anchor=(0.5, 1),
-                  loc='lower center')
+                       loc='lower center')
         self.ax.xaxis.set_major_locator(ticker.FixedLocator(xticklabels))
-        self.ax.set_xticklabels([str(year) + '-' + str(month) for year, month in data_expenditures.index])
+        self.ax.set_xticklabels([str(year) + '-' + str(month) for year, month in data_for_plot.index])
 
-        self.ax.set_ylim(min(data_expenditures.Cost+data_gains.Cost)*1.05, max(data_gains.Cost)*1.05)
+        self.ax.set_ylim(min(data_for_plot.Cost_expenditures + data_for_plot.Cost_revenues) * 1.05,
+                         max(data_for_plot.Cost_revenues) * 1.05)
+        self.fig.autofmt_xdate()
 
     def generatePlotOvertime(self, data):
         data.loc[data.Type == "Expense", "Cost"] = - data.loc[data.Type == "Expense", "Cost"]
@@ -72,3 +77,4 @@ class Plot:
 
     def show(self):
         plt.show()
+

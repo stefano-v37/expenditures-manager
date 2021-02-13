@@ -140,7 +140,7 @@ class ExtendedMainWindow(Ui_MainWindow):
         self.instance._plot.generate(self.instance.data.copy())
         tempfig = self.instance._plot.fig
         tempax = self.instance._plot.ax
-        temp = MatplotlibCanvas(fig = tempfig, ax = tempax)
+        temp = MatplotlibCanvas(fig=tempfig, ax=tempax)
         self.dynamicPlot.addWidget(temp)
 
     def __extend__(self):
