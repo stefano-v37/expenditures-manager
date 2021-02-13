@@ -84,8 +84,8 @@ class Instance:
         else:
             return False
 
-    def plot(self, plotType = "", figsize = (16,9)):
-        self._plot = Plot(plotType = plotType, figsize = figsize)
+    def plot(self, plotType="", figsize = (16,9)):
+        self._plot = Plot(plotType=plotType, figsize = figsize)
 
     def save_df(self):
         self.data.to_csv(self.link, index = False)
