@@ -2,10 +2,11 @@ name: expenditures-manager
 channels:
 - defaults
 dependencies:
-- python
+- python = 3.8.5
 - matplotlib
-- notebook
 - numpy
 - pandas
+- pytest
 - pyyaml
 - setuptools
+- sqlalchemy

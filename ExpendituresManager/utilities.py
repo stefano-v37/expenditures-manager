@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import yaml
 
@@ -16,3 +17,13 @@ def get_configuration_entries(user='default'):
     columns = configuration['columns']
     name = configuration['name'] + '.csv'
     return path, columns, name
+
+
+def generate_sqlite_uri(path):
+    return 'sqlite:///{}'.format(path)
+
+
+def string_to_date(date):
+    date = datetime.strptime(date, "%Y-%m-%d")
+    print(date)
+    return date
